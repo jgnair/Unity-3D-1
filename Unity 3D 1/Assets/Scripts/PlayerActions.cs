@@ -19,6 +19,7 @@ public class PlayerActions : MonoBehaviour
     Transform camT;
     Vector3 destination;
     Vector2 input;
+    GameObject projectileObj;
 
 
     bool TPSphere;
@@ -79,14 +80,15 @@ public class PlayerActions : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(projectile.transform.position.x, projectile.transform.position.y + 0.5f, projectile.transform.position.z);
+            transform.position = new Vector3(projectileObj.transform.position.x, projectileObj.transform.position.y + 0.5f, projectileObj.transform.position.z);
+            Destroy(projectileObj);
             TPSphere = true;
         }
     }
 
     void createTPSphere(Transform firePoint)
     {
-        var projectileObj = Instantiate(projectile, firePoint.position, Quaternion.identity) as GameObject;
+        projectileObj = Instantiate(projectile, firePoint.position, Quaternion.identity) as GameObject;
         projectileObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
     }
 

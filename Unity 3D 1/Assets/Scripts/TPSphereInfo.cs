@@ -18,9 +18,5 @@ public class TPSphereInfo : MonoBehaviour
             rb.useGravity = false;
             rb.velocity = new Vector3(0, 0, 0);
         }
-        else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Bullet")
-        {
-            Destroy (gameObject);
-        }
     }
 }

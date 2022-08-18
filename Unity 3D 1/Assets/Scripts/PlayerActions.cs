@@ -79,7 +79,7 @@ public class PlayerActions : MonoBehaviour
         }
         else
         {
-            transform.position = projectile.transform.position;
+            transform.position = new Vector3(projectile.transform.position.x, projectile.transform.position.y + 0.5f, projectile.transform.position.z);
             TPSphere = true;
         }
     }
@@ -87,7 +87,7 @@ public class PlayerActions : MonoBehaviour
     void createTPSphere(Transform firePoint)
     {
         var projectileObj = Instantiate(projectile, firePoint.position, Quaternion.identity) as GameObject;
-        projectileObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position * projectileSpeed);
+        projectileObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
     }
 
 }

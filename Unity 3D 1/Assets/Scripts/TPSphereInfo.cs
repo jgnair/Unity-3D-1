@@ -5,23 +5,21 @@ using UnityEngine;
 public class TPSphereInfo : MonoBehaviour
 {
     Rigidbody rb;
-    bool collision;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        collision = false;
     }
 
-    void OnCollissionEnter(Collision col)
+    void OnCollisionEnter(Collision col)
     {
-        if((col.gameObject.tag == "Ground" || col.gameObject.tag == "Wall") && !collision)
+        if(col.gameObject.tag == "Terrain")
         {
+            rb.useGravity = false;
             rb.velocity = new Vector3(0, 0, 0);
         }
-        else if(col.gameObject.tag == "Player")
+        else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Bullet")
         {
-            collision = true;
             Destroy (gameObject);
         }
     }

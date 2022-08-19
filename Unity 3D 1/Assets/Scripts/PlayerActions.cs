@@ -9,24 +9,28 @@ public class PlayerActions : MonoBehaviour
     Rigidbody rb;
     [SerializeField] float movementSpeed = 1f;
     [SerializeField] float jumpSpeed = 2f;
-    [SerializeField] float projectileSpeed = 10f;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask ground;
-    [SerializeField] GameObject TPSphere;
-    [SerializeField] GameObject bullet;
-    [SerializeField] Transform firepoint;
-    [SerializeField] Camera cam;
-    [SerializeField] float TPSphereTimer;
-    [SerializeField] TextMeshProUGUI ammo;
 
+    [SerializeField] float projectileSpeed = 10f;
+    [SerializeField] Transform firepoint;
+    [SerializeField] GameObject TPSphere;
+    [SerializeField] float TPSphereFirerate;
+    float TPSphereTimer = 0f;
+    GameObject TPSphereObj;
+    [SerializeField] GameObject bullet;
+    [SerializeField] float bulletFirerate;
+    float bulletTimer = 0f;
+    GameObject bulletObj;
+    [SerializeField] TextMeshProUGUI ammo;
+    [SerializeField] TextMeshProUGUI TPSphereCooldown;
     [SerializeField] int maxAmmo;
     int curAmmo;
-    
+
+    [SerializeField] Camera cam;
     Transform camT;
     Vector3 destination;
     Vector2 input;
-    GameObject TPSphereObj;
-    GameObject bulletObj;
 
 
     bool TPSphereUse;
@@ -39,6 +43,7 @@ public class PlayerActions : MonoBehaviour
         camT = cam.transform;
         TPSphereUse = true;
         ammo.text = curAmmo + "/" + maxAmmo;
+        TPSphereCooldown.text = "Ready";
     }
 
     // Update is called once per frame
@@ -59,12 +64,21 @@ public class PlayerActions : MonoBehaviour
 
         if (Input.GetKeyDown("e") && Time.time >= TPSphereTimer)
         {
-            TPSphereTimer = Time.time + 1 / 10;
             TPSPhereAbility();
         }
 
-        if (Input.GetButtonDown("Fire1") && curAmmo != 0)
+        if(TPSphereTimer > Time.time)
         {
+            TPSphereCooldown.text = ((int)(TPSphereTimer-Time.time)).ToString();
+        }
+        else
+        {
+            TPSphereCooldown.text = "Ready";
+        }
+
+        if (Input.GetButtonDown("Fire1") && curAmmo != 0 && Time.time >= bulletTimer)
+        {
+            bulletTimer = Time.time + bulletFirerate;
             FireBullet();
             curAmmo--;
             ammo.text = curAmmo + "/" + maxAmmo;
@@ -118,6 +132,7 @@ public class PlayerActions : MonoBehaviour
         }
         else
         {
+            TPSphereTimer = Time.time + TPSphereFirerate;
             transform.position = new Vector3(TPSphereObj.transform.position.x, TPSphereObj.transform.position.y, TPSphereObj.transform.position.z);
             Destroy(TPSphereObj);
             TPSphereUse = true;

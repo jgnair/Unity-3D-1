@@ -11,7 +11,8 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] float projectileSpeed = 10f;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask ground;
-    [SerializeField] GameObject projectile;
+    [SerializeField] GameObject TPSphere;
+    [SerializeField] GameObject bullet;
     [SerializeField] Transform firepoint;
     [SerializeField] Camera cam;
     [SerializeField] float TPSphereTimer;
@@ -19,17 +20,18 @@ public class PlayerActions : MonoBehaviour
     Transform camT;
     Vector3 destination;
     Vector2 input;
-    GameObject projectileObj;
+    GameObject TPSphereObj;
+    GameObject bulletObj;
 
 
-    bool TPSphere;
+    bool TPSphereUse;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         camT = cam.transform;
-        TPSphere = true;
+        TPSphereUse = true;
     }
 
     // Update is called once per frame
@@ -53,6 +55,11 @@ public class PlayerActions : MonoBehaviour
             TPSphereTimer = Time.time + 1 / 10;
             TPSPhereAbility();
         }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            FireBullet();
+        }
     }
 
     bool Grounded()
@@ -60,11 +67,27 @@ public class PlayerActions : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, 0.1f, ground);
     }
 
+    void FireBullet()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            destination = hit.point;
+        }
+        else
+        {
+            destination = ray.GetPoint(1000);
+        }
+        createBullet(firepoint);
+    }
+
     void TPSPhereAbility()
     {
-        if (TPSphere)
+        if (TPSphereUse)
         {
-            TPSphere = false;
+            TPSphereUse = false;
             Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;
 
@@ -80,16 +103,22 @@ public class PlayerActions : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(projectileObj.transform.position.x, projectileObj.transform.position.y, projectileObj.transform.position.z);
-            Destroy(projectileObj);
-            TPSphere = true;
+            transform.position = new Vector3(TPSphereObj.transform.position.x, TPSphereObj.transform.position.y, TPSphereObj.transform.position.z);
+            Destroy(TPSphereObj);
+            TPSphereUse = true;
         }
     }
 
     void createTPSphere(Transform firePoint)
     {
-        projectileObj = Instantiate(projectile, firePoint.position, Quaternion.identity) as GameObject;
-        projectileObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
+        TPSphereObj = Instantiate(TPSphere, firePoint.position, Quaternion.identity) as GameObject;
+        TPSphereObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
+    }
+
+    void createBullet(Transform firePoint)
+    {
+        bulletObj = Instantiate(bullet, firePoint.position, Quaternion.identity) as GameObject;
+        bulletObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
     }
 
 }

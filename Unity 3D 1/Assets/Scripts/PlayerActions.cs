@@ -43,12 +43,12 @@ public class PlayerActions : MonoBehaviour
         input = Vector2.ClampMagnitude(input, 1);
         transform.position += (camT.forward * input.y + camT.right * input.x) * Time.deltaTime * movementSpeed;
 
-        if (Input.GetButtonDown("Jump") && Grounded())
+        if (Input.GetKeyDown("space") && Grounded())
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpSpeed, rb.velocity.z);
         }
 
-        if (Input.GetButtonDown("Fire1") && Time.time >= TPSphereTimer)
+        if (Input.GetKeyDown("e") && Time.time >= TPSphereTimer)
         {
             TPSphereTimer = Time.time + 1 / 10;
             TPSPhereAbility();
@@ -80,7 +80,7 @@ public class PlayerActions : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(projectileObj.transform.position.x, projectileObj.transform.position.y + 0.5f, projectileObj.transform.position.z);
+            transform.position = new Vector3(projectileObj.transform.position.x, projectileObj.transform.position.y, projectileObj.transform.position.z);
             Destroy(projectileObj);
             TPSphere = true;
         }

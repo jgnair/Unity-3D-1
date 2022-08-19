@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerActions : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] Transform firepoint;
     [SerializeField] Camera cam;
     [SerializeField] float TPSphereTimer;
+    [SerializeField] TextMeshProUGUI ammo;
+
+    [SerializeField] int maxAmmo;
+    int curAmmo;
     
     Transform camT;
     Vector3 destination;
@@ -29,9 +34,11 @@ public class PlayerActions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        curAmmo = maxAmmo;
         rb = GetComponent<Rigidbody>();
         camT = cam.transform;
         TPSphereUse = true;
+        ammo.text = curAmmo + "/" + maxAmmo;
     }
 
     // Update is called once per frame
@@ -56,9 +63,17 @@ public class PlayerActions : MonoBehaviour
             TPSPhereAbility();
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && curAmmo != 0)
         {
             FireBullet();
+            curAmmo--;
+            ammo.text = curAmmo + "/" + maxAmmo;
+        }
+
+        if(Input.GetKeyDown("r") && curAmmo != maxAmmo)
+        {
+            curAmmo = maxAmmo;
+            ammo.text = curAmmo + "/" + maxAmmo;
         }
     }
 

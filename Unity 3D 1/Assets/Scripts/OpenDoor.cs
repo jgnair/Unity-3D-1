@@ -9,10 +9,12 @@ public class OpenDoor : MonoBehaviour
     [SerializeField] float doorSpeed;
     [SerializeField] GameObject path;
 
+    Rigidbody rb;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -20,7 +22,7 @@ public class OpenDoor : MonoBehaviour
     {
         if(target == null)
         {
-            while(transform.position != path.transform.position)
+            if (Vector3.Distance(transform.position, path.transform.position) > 0)
             {
                 transform.position = Vector3.MoveTowards(transform.position, path.transform.position, doorSpeed * Time.deltaTime);
             }

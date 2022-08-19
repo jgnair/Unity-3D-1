@@ -80,7 +80,7 @@ public class PlayerActions : MonoBehaviour
         {
             destination = ray.GetPoint(1000);
         }
-        createBullet(firepoint);
+        createBullet(firepoint, destination - firepoint.position);
     }
 
     void TPSPhereAbility()
@@ -115,10 +115,11 @@ public class PlayerActions : MonoBehaviour
         TPSphereObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
     }
 
-    void createBullet(Transform firePoint)
+    void createBullet(Transform firePoint, Vector3 dir)
     {
-        bulletObj = Instantiate(bullet, firePoint.position, Quaternion.identity) as GameObject;
-        bulletObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
-    }
 
+        bulletObj = Instantiate(bullet, firePoint.position, Quaternion.Euler(cam.transform.rotation.eulerAngles.x + 90, cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.z)) as GameObject;
+        bulletObj.GetComponent<Rigidbody>().velocity = (destination - firePoint.position).normalized * projectileSpeed;
+        
+    }
 }
